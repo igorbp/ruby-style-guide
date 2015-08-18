@@ -151,16 +151,7 @@ Translations of the guide are available in the following languages:
   ```Ruby
   # bad
   def too_much; something; something_else; end
-
-  # okish - notice that the first ; is required
-  def no_braces_method; body end
-
-  # okish - notice that the second ; is optional
-  def no_braces_method; body; end
-
-  # okish - valid syntax, but no ; makes it kind of hard to read
-  def some_method() body end
-
+  
   # good
   def some_method
     body
@@ -179,11 +170,6 @@ Translations of the guide are available in the following languages:
   [1, 2, 3].each { |e| puts e }
   class FooError < StandardError; end
   ```
-
-  The first variant is slightly more readable (and arguably more
-  popular in the Ruby community in general). The second variant has
-  the advantage of adding visual difference between block and hash
-  literals. Whichever one you pick - apply it consistently.
 
 * <a name="no-spaces-braces"></a>
   No spaces after `(`, `[` or before `]`, `)`.
@@ -295,25 +281,6 @@ Translations of the guide are available in the following languages:
              calc_something_else
            end
 
-  # good (and a bit more width efficient)
-  kind =
-    case year
-    when 1850..1889 then 'Blues'
-    when 1890..1909 then 'Ragtime'
-    when 1910..1929 then 'New Orleans Jazz'
-    when 1930..1939 then 'Swing'
-    when 1940..1950 then 'Bebop'
-    else 'Jazz'
-    end
-
-  result =
-    if some_cond
-      calc_something
-    else
-      calc_something_else
-    end
-  ```
-
 * <a name="empty-lines-between-methods"></a>
   Use empty lines between method definitions and also to break up a method
   into logical paragraphs internally.
@@ -332,62 +299,6 @@ Translations of the guide are available in the following languages:
     result
   end
   ```
-
-* <a name="no-trailing-params-comma"></a>
-  Avoid comma after the last parameter in a method call, especially when the
-  parameters are not on separate lines.
-<sup>[[link](#no-trailing-params-comma)]</sup>
-
-  ```Ruby
-  # bad - easier to move/add/remove parameters, but still not preferred
-  some_method(
-               size,
-               count,
-               color,
-             )
-
-  # bad
-  some_method(size, count, color, )
-
-  # good
-  some_method(size, count, color)
-  ```
-
-* <a name="consistent-multi-line-chains"></a>
-    Adopt a consistent multi-line method chaining style. There are two
-    popular styles in the Ruby community, both of which are considered
-    good - leading `.` (Option A) and trailing `.` (Option B).
-<sup>[[link](#consistent-multi-line-chains)]</sup>
-
-  * **(Option A)** When continuing a chained method invocation on
-    another line keep the `.` on the second line.
-
-    ```Ruby
-    # bad - need to consult first line to understand second line
-    one.two.three.
-      four
-
-    # good - it's immediately clear what's going on the second line
-    one.two.three
-      .four
-    ```
-
-  * **(Option B)** When continuing a chained method invocation on another line,
-    include the `.` on the first line to indicate that the
-    expression continues.
-
-    ```Ruby
-    # bad - need to read ahead to the second line to know that the chain continues
-    one.two.three
-      .four
-
-    # good - it's immediately clear that the expression continues beyond the first line
-    one.two.three.
-      four
-    ```
-
-  A discussion on the merits of both alternative styles can be found
-  [here](https://github.com/bbatsov/ruby-style-guide/pull/176).
 
 * <a name="no-double-indent"></a>
     Align the parameters of a method call if they span more than one
@@ -409,14 +320,6 @@ Translations of the guide are available in the following languages:
         from: 'us@example.com',
         subject: 'Important message',
         body: source.text)
-  end
-
-  # good
-  def send_mail(source)
-    Mailer.deliver(to: 'bob@example.com',
-                   from: 'us@example.com',
-                   subject: 'Important message',
-                   body: source.text)
   end
 
   # good (normal indent)
@@ -444,11 +347,6 @@ Translations of the guide are available in the following languages:
     'Spam', 'Spam', 'Spam', 'Spam', 'Spam', 'Spam', 'Spam', 'Spam',
     'Baked beans', 'Spam', 'Spam', 'Spam', 'Spam', 'Spam'
   ]
-
-  # good
-  menu_item =
-    ['Spam', 'Spam', 'Spam', 'Spam', 'Spam', 'Spam', 'Spam', 'Spam',
-     'Baked beans', 'Spam', 'Spam', 'Spam', 'Spam', 'Spam']
   ```
 
 * <a name="rdoc-conventions"></a>
@@ -574,11 +472,6 @@ Translations of the guide are available in the following languages:
   b = 'bar'
   c = 'baz'
   d = 'foobar'
-
-  a, b = b, a
-  puts a # => 'bar'
-  puts b # => 'foo'
-
   ```
 
 * <a name="no-for-loops"></a>
@@ -701,12 +594,11 @@ Translations of the guide are available in the following languages:
   end
 
   # good
-  result =
-    if condition
-      x
-    else
-      y
-    end
+  result = if condition
+             x
+           else
+             y
+           end
   ```
 
 * <a name="bang-not-not"></a>
@@ -1070,33 +962,6 @@ condition](#safe-assignment-in-condition).
   but they should ask themselves - is this code really readable and can the
   blocks' contents be extracted into nifty methods?
 
-* <a name="block-argument"></a>
-  Consider using explicit block argument to avoid writing block literal that
-  just passes its arguments to another block. Beware of the performance impact,
-  though, as the block gets converted to a Proc.
-<sup>[[link](#block-argument)]</sup>
-
-  ```Ruby
-  require 'tempfile'
-
-  # bad
-  def with_tmp_dir
-    Dir.mktmpdir do |tmp_dir|
-      Dir.chdir(tmp_dir) { |dir| yield dir }  # block just passes arguments
-    end
-  end
-
-  # good
-  def with_tmp_dir(&block)
-    Dir.mktmpdir do |tmp_dir|
-      Dir.chdir(tmp_dir, &block)
-    end
-  end
-
-  with_tmp_dir do |dir|
-    puts "dir is accessible as a parameter and pwd is set: #{dir}"
-  end
-  ```
 
 * <a name="no-explicit-return"></a>
   Avoid `return` where not required for flow of control.
@@ -1407,36 +1272,6 @@ no parameters.
   l = -> { something }
   ```
 
-* <a name="proc"></a>
-  Prefer `proc` over `Proc.new`.
-<sup>[[link](#proc)]</sup>
-
-  ```Ruby
-  # bad
-  p = Proc.new { |n| puts n }
-
-  # good
-  p = proc { |n| puts n }
-  ```
-
-* <a name="proc-call"></a>
-  Prefer `proc.call()` over `proc[]` or `proc.()` for both lambdas and procs.
-<sup>[[link](#proc-call)]</sup>
-
-  ```Ruby
-  # bad - looks similar to Enumeration access
-  l = ->(v) { puts v }
-  l[1]
-
-  # also bad - uncommon syntax
-  l = ->(v) { puts v }
-  l.(1)
-
-  # good
-  l = ->(v) { puts v }
-  l.call(1)
-  ```
-
 * <a name="underscore-unused-vars"></a>
   Prefix with `_` unused block parameters and local variables. It's also
   acceptable to use just `_` (although it's a bit less descriptive). This
@@ -1583,22 +1418,7 @@ no parameters.
   end
   ```
 
-  Prefer `next` in loops instead of conditional blocks.
 
-  ```Ruby
-  # bad
-  [0, 1, 2, 3].each do |item|
-    if item > 1
-      puts item
-    end
-  end
-
-  # good
-  [0, 1, 2, 3].each do |item|
-    next unless item > 1
-    puts item
-  end
-  ```
 
 * <a name="map-find-select-reduce-size"></a>
   Prefer `map` over `collect`, `find` over `detect`, `select` over `find_all`,
@@ -2264,71 +2084,7 @@ no parameters.
   end
   ```
 
-* <a name="alias-method-lexically"></a>
-  Prefer `alias` when aliasing methods in lexical class scope as the
-  resolution of `self` in this context is also lexical, and it communicates
-  clearly to the user that the indirection of your alias will not be altered
-  at runtime or by any subclass unless made explicit.
-<sup>[[link](#alias-method-lexically)]</sup>
 
-  ```Ruby
-  class Westerner
-    def first_name
-      @names.first
-    end
-
-    alias given_name first_name
-  end
-  ```
-
-  Since `alias`, like `def`, is a keyword, prefer bareword arguments over
-  symbols or strings. In other words, do `alias foo bar`, not
-  `alias :foo :bar`.
-
-  Also be aware of how Ruby handles aliases and inheritance: an alias
-  references the method that was resolved at the time the alias was defined;
-  it is not dispatched dynamically.
-
-  ```Ruby
-  class Fugitive < Westerner
-    def first_name
-      'Nobody'
-    end
-  end
-  ```
-
-  In this example, `Fugitive#given_name` would still call the original
-  `Westerner#first_name` method, not `Fugitive#first_name`. To override the
-  behavior of `Fugitive#given_name` as well, you'd have to redefine it in the
-  derived class.
-
-  ```Ruby
-  class Fugitive < Westerner
-    def first_name
-      'Nobody'
-    end
-
-    alias given_name first_name
-  end
-  ```
-
-* <a name="alias-method"></a>
-  Always use `alias_method` when aliasing methods of modules, classes, or
-  singleton classes at runtime, as the lexical scope of `alias` leads to
-  unpredictability in these cases.
-<sup>[[link](#alias-method)]</sup>
-
-  ```Ruby
-  module Mononymous
-    def self.included(other)
-      other.class_eval { alias_method :full_name, :given_name }
-    end
-  end
-
-  class Sting < Westerner
-    include Mononymous
-  end
-  ```
 
 ## Exceptions
 
@@ -2752,35 +2508,17 @@ resource cleanup when possible.
   ```
 
 * <a name="consistent-string-literals"></a>
-  Adopt a consistent string literal quoting style. There are two popular
-  styles in the Ruby community, both of which are considered good - single
-  quotes by default (Option A) and double quotes by default (Option B).
-<sup>[[link](#consistent-string-literals)]</sup>
+Prefer single-quoted strings when you don't need
+string interpolation or special symbols such as `\t`, `\n`, `'`,
+etc.
 
-  * **(Option A)** Prefer single-quoted strings when you don't need
-    string interpolation or special symbols such as `\t`, `\n`, `'`,
-    etc.
+  ```Ruby
+  # bad
+  name = "Bozhidar"
 
-    ```Ruby
-    # bad
-    name = "Bozhidar"
-
-    # good
-    name = 'Bozhidar'
-    ```
-
-  * **(Option B)** Prefer double-quotes unless your string literal
-    contains `"` or escape characters you want to suppress.
-
-    ```Ruby
-    # bad
-    name = 'Bozhidar'
-
-    # good
-    name = "Bozhidar"
-    ```
-
-  The string literals in this guide are aligned with the first style.
+  # good
+  name = 'Bozhidar'
+  ```
 
 * <a name="concat-strings"></a>
   Avoid using `String#+` when you need to construct large data chunks.
